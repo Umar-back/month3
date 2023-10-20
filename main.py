@@ -1,13 +1,15 @@
 import asyncio
 import logging
 import sys
-from decouple import config
+# from decouple import config
+from dotenv import load_dotenv
+from os import getenv
 from aiogram import Bot, Dispatcher, Router, types
 from aiogram.filters import Command
 
 
-BOT_TOKEN = config('BOT_TOKEN')
-bot = Bot(token=BOT_TOKEN)
+load_dotenv()
+bot = Bot(token=getenv('BOT_TOKEN'))
 dp = Dispatcher(bot=bot)
 
 @dp.message(Command('start'))
