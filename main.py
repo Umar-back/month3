@@ -1,42 +1,28 @@
 import asyncio
+from aiogram.types import BotCommand
 import logging
 import sys
-# from decouple import config
-from dotenv import load_dotenv
-from os import getenv
-from aiogram import Bot, Dispatcher, Router, types
-from aiogram.filters import Command
+from bot import dp, bot
 
-
-load_dotenv()
-bot = Bot(token=getenv('BOT_TOKEN'))
-dp = Dispatcher(bot=bot)
-
-@dp.message(Command('start'))
-async def start(message: types.Message):
-    print(message.from_user)
-    await message.reply(f'Hello, {message.from_user.first_name}') #reply  отвечает именно на то сообщение message просто ответ
-
-@dp.message(Command('pic'))
-async def pic(message: types.Message):
-    file = types.FSInputFile('images/photo1.jpg')
-    await message.answer_photo(file)
-
-@dp.message(Command('info'))
-async def start(message: types.Message):
-    print(message)
-    await message.answer('My name is Umar')
-
-
-# @dp.message()
-# async def echo(message: types.Message):
-#     await message.answer(message.text)
-
+from handlers.start import start_router
+from handlers.echo import echo_router
+# from handlers.pic import pic_router
+from handlers.shop import shop_router
 
 async def main():
+    await bot.set_my_commands(
+        [
+        BotCommand(command='start', description='Главная'),
+        BotCommand(command='pic', description='Картинка')
+        ])
+    # роутеры
+    dp.include_router(start_router)
+    dp.include_router(shop_router)
+    # dp.include_router(pic_router)
+
+    # в самый конец
+    dp.include_router(echo_router)
     await dp.start_polling(bot)
-
-
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
