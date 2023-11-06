@@ -1,4 +1,4 @@
-from aiogram import types
+from aiogram import types, Router
 from aiogram.filters import Command
 
 pic_router = Router()
